@@ -3,32 +3,32 @@ from keras.models import Sequential
 from keras.layers import *
 import matplotlib.pyplot as plt
 from src.LoadData import *
+from src.Model import Baseline
 
 tr_img_data, tr_lbl_data = ReshapeImages(TrainDataWithLabel(), -1, 64, 64, 1)
 tst_img_data, tst_lbl_data = ReshapeImages(TestDataWithLabel(), -1, 64, 64, 1)
 testing_images = TestDataWithLabel()
 
-
 ## Testovaci model na nacitanie datasetu
-model = Sequential()
-model.add(InputLayer(input_shape=[64, 64, 1]))
-model.add(Conv2D(filters=32, kernel_size=5, strides=1, padding="same", activation="relu"))
-model.add(MaxPool2D(pool_size=5, padding="same"))
-
-
-model.add(Dropout(0.25))
-model.add(Flatten())
-model.add(Dense(512, activation="relu"))
+model = Baseline()
 
 optimizer = Adam(lr=1e-3)
-
 model.compile(optimizer=optimizer,
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-model.fit(tr_img_data, tr_lbl_data, epochs=1, batch_size=100)
+model.fit(
+    x=tr_img_data,
+    y=tr_lbl_data,
+    epochs=1,
+    batch_size=100)
+
+model.save("Baseline.h5")
+
 
 model.summary()
+
+
 plt.interactive(False)
 fig = plt.figure(figsize=(14, 14))
 for cnt, data in enumerate(testing_images[10:40]):

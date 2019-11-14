@@ -4,6 +4,7 @@ import os
 from random import shuffle
 from tqdm import tqdm
 from keras.optimizers import *
+import numpy as np
 
 
 #nastavenie ciest k datasetu
