@@ -33,7 +33,7 @@ model.fit(
     x=tr_img_data,
     y=tr_lbl_data,
     epochs=1,
-    batch_size=100,
+    batch_size=15,
     callbacks=callbacks,
     validation_data=(val_img_data, val_lbl_data))
 
