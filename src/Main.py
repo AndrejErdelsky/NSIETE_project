@@ -3,7 +3,7 @@ from keras.models import Sequential
 from keras.layers import *
 import keras
 import matplotlib.pyplot as plt
-from tensorflow_core.python.ops.gen_logging_ops import timestamp
+# from tensorflow_core.python.ops.gen_logging_ops import timestamp
 import datetime
 from src.LoadData import *
 from src.Model import Baseline
@@ -26,8 +26,9 @@ model.compile(optimizer=optimizer,
 callbacks = [
     keras.callbacks.TensorBoard(
         log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S")),
-        histogram_freq=1,
-        profile_batch=0)
+        histogram_freq=1#,
+        # profile_batch=0
+    )
 ]
 model.fit(
     x=tr_img_data,
@@ -40,23 +41,3 @@ model.fit(
 model.save("Baseline.h5")
 
 
-model.summary()
-
-
-plt.interactive(False)
-fig = plt.figure(figsize=(14, 14))
-for cnt, data in enumerate(testing_images[10:40]):
-
-    y = fig.add_subplot(6, 5, cnt + 1)
-    img = data[0]
-    data = img.reshape(1, 64, 64, 1)
-    model_out = model.predict([data])
-    if np.argmax(model_out) == 1:
-        str_label = "occupied"
-    else:
-        str_label = "empty"
-    y.imshow(img, cmap="gray")
-    plt.title(str_label)
-    y.axes.get_xaxis().set_visible(False)
-    y.axes.get_yaxis().set_visible(False)
-plt.show()
