@@ -5,18 +5,17 @@ import keras
 import matplotlib.pyplot as plt
 # from tensorflow_core.python.ops.gen_logging_ops import timestamp
 import datetime
-from src.LoadData import *
-from src.Model import Baseline
-
-tr_img_data, tr_lbl_data = ReshapeImages(TrainDataWithLabel(), -1, 64, 64, 1)
-tst_img_data, tst_lbl_data = ReshapeImages(TestDataWithLabel(), -1, 64, 64, 1)
-testing_images = TestDataWithLabel()
-val_img_data = tr_img_data[len(tr_img_data)//2:]
-val_lbl_data = tr_lbl_data[len(tr_lbl_data)//2:]
-tr_img_data = tr_img_data[:len(tr_img_data)//2]
-tr_lbl_data = tr_lbl_data[:len(tr_lbl_data)//2]
+from src.LoadDataSegmentation import *
+from src.Model import *
+#tst_img_data, tst_lbl_data = ReshapeImages(TrainDataWithLabel(), -1, 64, 64, 3)
+final_data = ReshapeImages(TrainDataWithLabel(),-1, 1280, 720, 3)
+mask =  ReshapeImages(LoadMask(), -1, 1280, 720, 1)
+val_data = final_data[len(final_data)//2:]
+tr_data = final_data[:len(final_data)//2]
+val_mask = mask[len(mask)//2:]
+tr_mask = mask[:len(mask)//2]
 ## Testovaci model na nacitanie datasetu
-model = Baseline()
+model = get_segmentation_model2()
 
 optimizer = Adam(lr=1e-3)
 model.compile(optimizer=optimizer,
@@ -26,17 +25,17 @@ model.compile(optimizer=optimizer,
 callbacks = [
     keras.callbacks.TensorBoard(
         log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S")),
-        histogram_freq=1#,
-        # profile_batch=0
+        histogram_freq=1,
+        profile_batch=0
     )
 ]
 model.fit(
-    x=tr_img_data,
-    y=tr_lbl_data,
+    x=tr_data,
+    y=tr_mask,
     epochs=1,
-    batch_size=15,
+    batch_size=1,
     callbacks=callbacks,
-    validation_data=(val_img_data, val_lbl_data))
+    validation_data=(val_data, val_mask))
 
 model.save("Baseline.h5")
 

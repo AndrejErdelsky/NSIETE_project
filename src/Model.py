@@ -51,7 +51,7 @@ def get_segmentation_model():
 
 
 def get_segmentation_model2():
-    inp = Input(shape=(1280, 640, 3,))
+    inp = Input(shape=(1280, 720, 3,))
 
     c1 = Conv2D(filters=64, kernel_size=(3, 3), padding="valid", activation="relu", strides=1)(inp)
     c2 = Conv2D(filters=64, kernel_size=(3, 3), padding="valid", activation="relu", strides=1)(c1)
