@@ -1,47 +1,75 @@
 import os
-import cv2
+import time
+
 import glob
 import xml.etree.ElementTree as ET
+import numpy as np
+from PIL import Image, ImageDraw
+import math
+import numpy.matlib as npm
 
 
-directory = r'C:\Dataset'
+# https://stackoverflow.com/questions/50204604/how-to-draw-a-filled-rotated-rectangle-with-center-coordinates-width-height-an
+
+def convert5Pointto8Point(cx_, cy_, w_, h_, a_):
+    theta = math.radians(a_)
+    bbox = npm.repmat([[cx_], [cy_]], 1, 5) + \
+           np.matmul([[math.cos(theta), math.sin(theta)],
+                      [-math.sin(theta), math.cos(theta)]],
+                     [[-w_ / 2, w_ / 2, w_ / 2, -w_ / 2, w_ / 2 + 8],
+                      [-h_ / 2, -h_ / 2, h_ / 2, h_ / 2, 0]])
+
+    x1, y1 = bbox[0][0], bbox[1][0]
+    x2, y2 = bbox[0][1], bbox[1][1]
+    x3, y3 = bbox[0][2], bbox[1][2]
+    x4, y4 = bbox[0][3], bbox[1][3]
+
+    return [x1, y1, x2, y2, x3, y3, x4, y4]
+
+zaciatok = time.time()
+directory = r'D:\Dataset'
 color = (0, 0, 0)
 thickness = -1
 
 # parse an xml file by name
-filenames = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\PUCPR\Sunny\\2012-09-11\*.xml")
-filenamesJPG = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\PUCPR\Sunny\\2012-09-11\*.jpg")
-cisloobrazka=0
-cislo=0
+filenames = glob.glob("D:\Dataset\PKLot\PKLot\PKLot\\UFPR05\Sunny\\2013-02-22\*.xml")
+filenamesJPG = glob.glob("D:\Dataset\PKLot\PKLot\PKLot\\UFPR05\Sunny\\2013-02-22\*.jpg")
+cisloobrazka = 0
+cislo = 0
 for filename in filenames:
-    image = cv2.imread(filenamesJPG[cisloobrazka], 0)
-
+    image = Image.open(filenamesJPG[cisloobrazka])
+    image = Image.new('L', (1280, 720), (0))
     tree = ET.parse(filename)
     root = tree.getroot()
 
-    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    for movie in root.findall("./space[@occupied='1']"):
-        print(movie.attrib)
-        i=0
+    color_input = 0
+    for movie in root.findall("./space[@occupied='0']"):
+        center = movie.findall('rotatedRect/center')
+        size = movie.findall('rotatedRect/size')
+        angle = movie.findall('rotatedRect/angle')
 
-        for point in movie.findall("./contour/point"):
-            print(point.attrib["x"], point.attrib["y"])
-            separator = ''
-            startX = separator.join(point.attrib["x"])
-            startY= separator.join(point.attrib["y"])
-            if i==0:
+        polygon = convert5Pointto8Point(int(center[0].attrib["x"]), int(center[0].attrib["y"]),
+                                        int(size[0].attrib["w"]),
+                                        int(size[0].attrib["h"]), ((-1) * (int(angle[0].attrib["d"]))))
+        ImageDraw.Draw(image).polygon(polygon, outline='white', fill='white')
+    # for movie in root.findall("./space[@occupied='1']"):
+    #     print(movie.attrib)
+    #     center = movie.findall('rotatedRect/center')
+    #     size = movie.findall('rotatedRect/size')
+    #     angle = movie.findall('rotatedRect/angle')
+    #
+    #     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    #
+    #     polygon = convert5Pointto8Point(int(center[0].attrib["x"]), int(center[0].attrib["y"]),
+    #                                     int(size[0].attrib["w"]),
+    #                                     int(size[0].attrib["h"]), ((-1) * (int(angle[0].attrib["d"]))))
+    #     ImageDraw.Draw(image).polygon(polygon, outline='black', fill='black')
 
-                start_point = (int(startX), int(startY))
-            if i==2:
-                end_point = (int(startX), int(startY))
-            i+=1
-
-        image = cv2.rectangle(image, start_point, end_point, color, thickness)
     os.chdir(directory)
-    filename = "savedImage"+str(cislo)+".jpg"
-    cislo+=1
+    filename = "savedImage" + str(cislo) + ".jpg"
+    cislo += 1
 
-    # Using cv2.imwrite() method
     # Saving the image
-    cv2.imwrite(filename, image)
-    cisloobrazka+=1
+    image.save(filename)
+    cisloobrazka += 1
+print(time.time()-zaciatok)
