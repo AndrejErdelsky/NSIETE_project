@@ -127,6 +127,6 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'],
               #sample_weight_mode='temporal'
               )
-model.fit_generator(generator=train_generator,epochs=50,steps_per_epoch=1450, validation_data=val_generator, validation_steps=(NO_OF_VAL_IMAGES//BATCH_SIZE), callbacks=callbacks)
+model.fit_generator(generator=train_generator,epochs=50,steps_per_epoch=1450, validation_data=val_generator, validation_steps=(NO_OF_VAL_IMAGES), callbacks=callbacks)
 
 model.save('Model.h5')
