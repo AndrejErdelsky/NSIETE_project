@@ -43,7 +43,7 @@ for filename in filenames:
     root = tree.getroot()
 
     color_input = 0
-    for movie in root.findall("./space[@occupied='0']"):
+    for movie in root.findall("./space[@occupied='1']"):
         center = movie.findall('rotatedRect/center')
         size = movie.findall('rotatedRect/size')
         angle = movie.findall('rotatedRect/angle')

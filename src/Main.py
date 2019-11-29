@@ -1,4 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
+
+from keras import metrics
 from keras.models import Sequential
 from keras.layers import *
 import keras
@@ -7,20 +9,26 @@ import matplotlib.pyplot as plt
 import datetime
 from src.LoadDataSegmentation import *
 from src.Model import *
-#tst_img_data, tst_lbl_data = ReshapeImages(TrainDataWithLabel(), -1, 64, 64, 3)
-final_data = ReshapeImages(TrainDataWithLabel(),-1, 1280, 720, 3)
-mask =  ReshapeImages(LoadMask(), -1, 1280, 720, 1)
-val_data = final_data[len(final_data)//2:]
-tr_data = final_data[:len(final_data)//2]
-val_mask = mask[len(mask)//2:]
-tr_mask = mask[:len(mask)//2]
+from sklearn.utils.class_weight import compute_class_weight
+
+
+# tst_img_data, tst_lbl_data = ReshapeImages(TrainDataWithLabel(), -1, 64, 64, 3)
+final_data = TrainDataWithLabel()
+mask = LoadMask()
+val_data = final_data[:1]
+tr_data = final_data[:1]
+val_mask = mask[:3]
+tr_mask = mask[:1]
 ## Testovaci model na nacitanie datasetu
-model = get_segmentation_model2()
+input_img = Input(shape=(320,320,3))
+model = get_unet(input_img)
 
 optimizer = Adam(lr=1e-3)
 model.compile(optimizer=optimizer,
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+              loss='mse',
+              metrics=['accuracy'],
+              #sample_weight_mode='temporal'
+              )
 
 callbacks = [
     keras.callbacks.TensorBoard(
@@ -28,15 +36,22 @@ callbacks = [
         histogram_freq=1,
         profile_batch=0
     )
+
 ]
+
+#tr_mask = np.ravel(np.round(tr_mask).astype(int))
+# print(np.unique(np.expand_dims(np.ravel(tr_mask),axis=0)))
+# print(model.summary())
+# cw = compute_class_weight('balanced', classes=np.unique(tr_mask), y=tr_mask)
+print(np.sum(tr_mask)/np.array(tr_mask).size)
 model.fit(
-    x=tr_data,
-    y=tr_mask,
-    epochs=1,
+    x=np.array(tr_data),
+    y=np.expand_dims(tr_mask, axis=-1),
+    #sample_weight=np.expand_dims(np.array([cw[i] for i in tr_mask]),axis=0),
+    epochs=60,
     batch_size=1,
     callbacks=callbacks,
-    validation_data=(val_data, val_mask))
+    # validation_data=(val_data, val_mask)
+)
 
-model.save("Baseline.h5")
-
-
+model.save("Baseline2.h5")

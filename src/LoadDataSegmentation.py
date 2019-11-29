@@ -22,8 +22,24 @@ def TrainDataWithLabel():
             path = os.path.join(data,i)
             img = cv2.imread(path)
             img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-            img = cv2.resize(img,(1280,720))
-            images.append([np.array(img)])
+            img = cv2.resize(img,(320,320))
+            img = img / 255
+            images.append(np.array(img))
+
+
+    return images
+
+def TestDataWithLabel():
+    images = []
+    #for picture in data:
+    for i in tqdm(os.listdir(data)):
+            path = os.path.join(data,i)
+            img = cv2.imread(path)
+            img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+            img = cv2.resize(img,(320,320))
+            img = img / 255
+            images.append(np.array(img))
+
 
     return images
 
@@ -33,16 +49,21 @@ def LoadMask():
     for i in tqdm(os.listdir(mask)):
             path = os.path.join(mask,i)
             img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-            img = cv2.resize(img,(1280,720))
-            images.append([np.array(img)])
+
+            img = cv2.resize(img,(320,320))
+            cv2.imwrite("test.jpg", img)
+            img = img / 255
+            images.append(np.array(img))
 
     return images
 
 
 
-def ReshapeImages(images, x, y, z, w):
+def ReshapeImages(images, batch, width, height):
+    img_data = []
+    for i in images:
+        img_data.append(cv2.resize(i,(width,height)))
 
-    img_data = np.array([i for i in images]).reshape(x, y, z, w)
 
 
     return img_data
