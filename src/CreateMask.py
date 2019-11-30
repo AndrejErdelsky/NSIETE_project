@@ -27,15 +27,15 @@ def convert5Pointto8Point(cx_, cy_, w_, h_, a_):
     return [x1, y1, x2, y2, x3, y3, x4, y4]
 
 zaciatok = time.time()
-directory = r'C:\Dataset\MaskCloudyRainySunnyPUCR'
-directorySave = r'C:\Dataset\FrameCloudyRainySunnyPUCR'
+directory = r'C:\Dataset\MaskCloudyRainySunnyUFPR04'
+directorySave = r'C:\Dataset\FrameCloudyRainySunnyUFPR04'
 
 color = (0, 0, 0)
 thickness = -1
 
 # parse an xml file by name
-filenames = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\PUCPR\*\\*\*.xml")
-filenamesJPG = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\PUCPR\*\\*\*.jpg")
+filenames = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\UFPR04\*\\*\*.xml")
+filenamesJPG = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\UFPR04\*\\*\*.jpg")
 cisloobrazka = 0
 cislo = 0
 for filename in filenames:
