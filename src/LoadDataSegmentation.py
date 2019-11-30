@@ -24,8 +24,8 @@ maskPUCR = "..\DatasetPUCR\Mask"
 data04 = "..\DatasetUFPR04\Snimky"
 mask04 = "..\DatasetUFPR04\Mask"
 
-data=data04
-mask=mask04
+data=dataPUCR
+mask=maskPUCR
 
 #olablovanie datasetu, trenovacie data
 def TrainDataWithLabel():
@@ -50,7 +50,6 @@ def TestDataWithLabel():
         img = cv2.imread(path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (320, 320))
-        img = img / 255
         images.append(np.array(img))
 
     return images

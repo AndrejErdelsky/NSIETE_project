@@ -6,7 +6,7 @@ import datetime
 import os
 
 
-#model
+# model
 def conv2d_block(input_tensor, n_filters, kernel_size=3, batchnorm=True):
     """Function to add 2 convolutional layers with the parameters passed to it"""
     # first layer
@@ -71,49 +71,47 @@ def get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True):
     model = Model(inputs=[input_img], outputs=[outputs])
     return model
 
-#nacitanie modelu
+
+# nacitanie modelu
 callbacks = [
     keras.callbacks.TensorBoard(
         log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S")),
-        histogram_freq=1#,
-        #profile_batch=0
+        histogram_freq=1  # ,
+        # profile_batch=0
     )
 
 ]
 
-#definovanie generatora
+# definovanie generatora
 train_datagen = ImageDataGenerator()
-mask_train_datagen =  ImageDataGenerator(rescale = 1/255)
+mask_train_datagen = ImageDataGenerator(rescale=1 / 255)
 val_datagen = ImageDataGenerator()
 
 train_image_generator = train_datagen.flow_from_directory(
-'/NN/xerdelsky/NSIETE_project/Dataset/train_frames',
-    target_size = (320,320),
-    class_mode= None,
-    batch_size = 1)
+    '/NN/xerdelsky/NSIETE_project/Dataset/train_frames',
+    target_size=(320, 320),
+    class_mode=None,
+    batch_size=1)
 
 train_mask_generator = mask_train_datagen.flow_from_directory(
-'/NN/xerdelsky/NSIETE_project/Dataset/train_masks',
-    target_size = (320,320),
-    class_mode= None,
-    color_mode = 'grayscale',
-batch_size = 1)
-
+    '/NN/xerdelsky/NSIETE_project/Dataset/train_masks',
+    target_size=(320, 320),
+    class_mode=None,
+    color_mode='grayscale',
+    batch_size=1)
 
 val_image_generator = val_datagen.flow_from_directory(
-'/NN/xerdelsky/NSIETE_project/Dataset/val_frames',
-    target_size = (320,320),
-    class_mode= None,
-    batch_size = 1)
-
+    '/NN/xerdelsky/NSIETE_project/Dataset/val_frames',
+    target_size=(320, 320),
+    class_mode=None,
+    batch_size=1)
 
 val_mask_generator = val_datagen.flow_from_directory(
-'/NN/xerdelsky/NSIETE_project/Dataset/val_masks',
-    target_size = (320,320),
-    class_mode= None,
-    color_mode = 'grayscale',
-batch_size = 1)
-
+    '/NN/xerdelsky/NSIETE_project/Dataset/val_masks',
+    target_size=(320, 320),
+    class_mode=None,
+    color_mode='grayscale',
+    batch_size=1)
 
 NO_OF_VAL_IMAGES = len(os.listdir('/NN/xerdelsky/NSIETE_project/Dataset/val_frames/val'))
 NO_OF_TRAIN_IMAGES = len(os.listdir('/NN/xerdelsky/NSIETE_project/Dataset/train_frames/train'))
@@ -121,7 +119,7 @@ BATCH_SIZE = 'Batch size previously initialised'
 train_generator = zip(train_image_generator, train_mask_generator)
 val_generator = zip(val_image_generator, val_mask_generator)
 
-input_img = keras.layers.Input(shape=(320,320,3))
+input_img = keras.layers.Input(shape=(320, 320, 3))
 model = get_unet(input_img)
 model.summary()
 
@@ -129,8 +127,8 @@ optimizer = keras.optimizers.Adam(lr=1e-3)
 model.compile(optimizer=optimizer,
               loss='mse',
               metrics=['accuracy'],
-              #sample_weight_mode='temporal'
+              # sample_weight_mode='temporal'
               )
-model.fit_generator(generator=train_generator,epochs=30,steps_per_epoch=1, callbacks=callbacks)
+model.fit_generator(generator=train_generator, epochs=30, steps_per_epoch=1, callbacks=callbacks)
 
 model.save('ModelDatasetUFPR05frame1.h5')
