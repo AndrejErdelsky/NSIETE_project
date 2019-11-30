@@ -9,14 +9,14 @@ from keras.utils import plot_model
 from src.LoadDataSegmentation import *
 import cv2
 
-model = load_model('Model.h5')
+model = load_model('ModelDatasetUFPR04.h5')
 # plot_model(model, to_file='model_vizualization.png')
 model.summary()
 fig = plt.figure(figsize=(14, 14))
 y = fig.add_subplot(6, 5, 1)
-testing_images = TrainDataWithLabel()
+testing_images = TestDataWithLabel()
 
-for cnt, data in enumerate(testing_images[:2]):
+for cnt, data in enumerate(testing_images[160:179]):
     y = fig.add_subplot(6, 5, cnt + 1)
     img = data
     # data = ReshapeImages(img, 1, 1280, 720, 3)
@@ -24,7 +24,7 @@ for cnt, data in enumerate(testing_images[:2]):
     model_out = model.predict(np.array(data).reshape(1, 320, 320, 3))
     # model_out = np.argmax(model_out, axis=-1)
     print(np.max(model_out))
-    model_out = np.round(model_out, 2)
+    #model_out = np.round(model_out, 2)
 
     model_out *= 255
     model_out = np.reshape(model_out, (320, 320))
@@ -39,17 +39,17 @@ for cnt, data in enumerate(testing_images[:2]):
     # img.save('my.png')
     # img = img.resize((1280, 720))
     # img = img.resize((1280, 720), resample=Image.BILINEAR)
-    img.show()
+    #img.show()
     # model_out.save("ahoj.jpg")
     # print(type(model_out),model_out)
     # cv2.imshow('test',model_out)
     # cv2.waitKey(0)
     # break
-    # y.imshow(model_out)
+    y.imshow(img)
 
-#      y.axes.get_xaxis().set_visible(False)
-#      y.axes.get_yaxis().set_visible(False)
-# plt.show()
+    y.axes.get_xaxis().set_visible(False)
+    y.axes.get_yaxis().set_visible(False)
+plt.show()
 #   return pred_mask[0]
 #
 # def show_predictions(dataset=None, num=1):

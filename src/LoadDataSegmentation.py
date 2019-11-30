@@ -8,11 +8,24 @@ import numpy as np
 
 
 #nastavenie ciest k datasetu
-#Sunny
-data = "C:\Dataset\Snimky"
-mask = "C:\Dataset\Mask"
+#Sunny05
+data05S = "..\Dataset\Snimky"
+mask05S = "..\Dataset\Mask"
 
+#CloudyRainy05
+data05CR = "..\DatasetCloudyRainy\Snimky"
+mask05CR = "..\DatasetCloudyRainyt\Mask"
 
+#PUCR
+dataPUCR = "..\DatasetPUCR\Snimky"
+maskPUCR = "..\DatasetPUCR\Mask"
+
+#04
+data04 = "..\DatasetUFPR04\Snimky"
+mask04 = "..\DatasetUFPR04\Mask"
+
+data=data04
+mask=mask04
 
 #olablovanie datasetu, trenovacie data
 def TrainDataWithLabel():
@@ -31,15 +44,14 @@ def TrainDataWithLabel():
 
 def TestDataWithLabel():
     images = []
-    #for picture in data:
+    # for picture in data:
     for i in tqdm(os.listdir(data)):
-            path = os.path.join(data,i)
-            img = cv2.imread(path)
-            img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-            img = cv2.resize(img,(320,320))
-            img = img / 255
-            images.append(np.array(img))
-
+        path = os.path.join(data, i)
+        img = cv2.imread(path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.resize(img, (320, 320))
+        img = img / 255
+        images.append(np.array(img))
 
     return images
 
