@@ -9,14 +9,14 @@ from keras.utils import plot_model
 from src.LoadDataSegmentation import *
 import cv2
 
-model = load_model('Baseline2.h5')
+model = load_model('Model.h5')
 # plot_model(model, to_file='model_vizualization.png')
 model.summary()
 fig = plt.figure(figsize=(14, 14))
 y = fig.add_subplot(6, 5, 1)
 testing_images = TrainDataWithLabel()
 
-for cnt, data in enumerate(testing_images[:1]):
+for cnt, data in enumerate(testing_images[:2]):
     y = fig.add_subplot(6, 5, cnt + 1)
     img = data
     # data = ReshapeImages(img, 1, 1280, 720, 3)

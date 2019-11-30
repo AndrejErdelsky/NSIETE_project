@@ -27,23 +27,26 @@ def convert5Pointto8Point(cx_, cy_, w_, h_, a_):
     return [x1, y1, x2, y2, x3, y3, x4, y4]
 
 zaciatok = time.time()
-directory = r'C:\Dataset\Mask'
+directory = r'C:\Dataset\MaskCloudyRainySunnyPUCR'
+directorySave = r'C:\Dataset\FrameCloudyRainySunnyPUCR'
+
 color = (0, 0, 0)
 thickness = -1
 
 # parse an xml file by name
-filenames = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\UFPR05\Sunny\\*\*.xml")
-filenamesJPG = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\UFPR05\Sunny\\*\*.jpg")
+filenames = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\PUCPR\*\\*\*.xml")
+filenamesJPG = glob.glob("C:\Dataset\PKLot\PKLot\PKLot\\PUCPR\*\\*\*.jpg")
 cisloobrazka = 0
 cislo = 0
 for filename in filenames:
     image = Image.open(filenamesJPG[cisloobrazka])
+    imageSave = Image.open(filenamesJPG[cisloobrazka])
     image = Image.new('L', (1280, 720), (0))
     tree = ET.parse(filename)
     root = tree.getroot()
 
     color_input = 0
-    for movie in root.findall("./space[@occupied='1']"):
+    for movie in root.findall("./space[@occupied='0']"):
         center = movie.findall('rotatedRect/center')
         size = movie.findall('rotatedRect/size')
         angle = movie.findall('rotatedRect/angle')
@@ -71,5 +74,8 @@ for filename in filenames:
 
     # Saving the image
     image.save(filename)
+
+    os.chdir(directorySave)
+    imageSave.save(filename)
     cisloobrazka += 1
 print(time.time()-zaciatok)
