@@ -1,0 +1,7 @@
+Uspesnost modelu UFPR05CRE5.h5 je 0.0978576275915557
+Uspesnost modelu ModelCloudyRainyUFPR05.h5 je 0.09969807572642332
+Uspesnost modelu ModelCloudyRainyUFPR05.h5 je 0.09969807572642332
+Uspesnost modelu UFPR05CRE15.h5 je 0.09938041082271169
+Uspesnost modelu UFPR05CRE20.h5 je 0.09938021484375
+Uspesnost modelu UFPR05CRLossBCE.h5 je 0.09939121495036343
+Uspesnost modelu UFPR05CRLossBCE.h5 je 0.09939121495036343

@@ -11,7 +11,7 @@ mask05S = "..\Dataset\Mask"
 
 # CloudyRainy05
 data05CR = "..\DatasetCloudyRainy\Snimky"
-mask05CR = "..\DatasetCloudyRainyt\Mask"
+mask05CR = "..\DatasetCloudyRainy\Mask"
 
 # PUCR
 dataPUCR = "..\DatasetPUCR\Snimky"
@@ -22,7 +22,7 @@ data04 = "..\DatasetUFPR04\Snimky"
 mask04 = "..\DatasetUFPR04\Mask"
 
 data = data05S
-mask = maskPUCR
+mask = mask05S
 
 
 # nacitanie vstupneho datasetu
@@ -61,7 +61,7 @@ def LoadMask():
 
         img = cv2.resize(img, (320, 320))
         cv2.imwrite("test.jpg", img)
-        img = img / 255
+        #img = img / 255
         images.append(np.array(img))
 
     return images
