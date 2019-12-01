@@ -132,10 +132,10 @@ model.compile(optimizer=optimizer,
               loss='mse',
               metrics=['accuracy'],
               )
-model.fit_generator(generator=train_generator, epochs=50, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
+model.fit_generator(generator=train_generator, epochs=15, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
                     validation_data=val_generator, validation_steps=NO_OF_VAL_IMAGES // 8, callbacks=callbacks)
 # ulozenie modelu
-model.save('UFPR05S.h5')
+model.save('UFPR05SE15.h5')
 
 # Generator a trenovanie pre UFPR05CloudyRainy
 train_image_generator = train_datagen.flow_from_directory(
@@ -187,10 +187,10 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'],
               # sample_weight_mode='temporal'
               )
-model.fit_generator(generator=train_generator, epochs=50, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
+model.fit_generator(generator=train_generator, epochs=15, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
                     validation_data=val_generator, validation_steps=NO_OF_VAL_IMAGES // 8, callbacks=callbacks)
 
-model.save('UFPR05CR.h5')
+model.save('UFPR05CRE15.h5')
 
 # Generator a trenovanie pre PUCR
 train_image_generator = train_datagen.flow_from_directory(
@@ -243,10 +243,10 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'],
               # sample_weight_mode='temporal'
               )
-model.fit_generator(generator=train_generator, epochs=50, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
+model.fit_generator(generator=train_generator, epochs=15, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
                     validation_data=val_generator, validation_steps=NO_OF_VAL_IMAGES // 8, callbacks=callbacks)
 
-model.save('PUCR.h5')
+model.save('PUCRE15.h5')
 
 # Generator a trenovanie pre UFPR04
 train_image_generator = train_datagen.flow_from_directory(
@@ -298,7 +298,7 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'],
               # sample_weight_mode='temporal'
               )
-model.fit_generator(generator=train_generator, epochs=50, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
+model.fit_generator(generator=train_generator, epochs=15, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
                     validation_data=val_generator, validation_steps=NO_OF_VAL_IMAGES // 8, callbacks=callbacks)
 
-model.save('UFPR04.h5')
+model.save('UFPR04E15.h5')
