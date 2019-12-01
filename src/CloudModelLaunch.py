@@ -5,7 +5,8 @@ from keras.layers import *
 import datetime
 import os
 
-#Model
+
+# Dvojita konvolucna vrstva
 def conv2d_block(input_tensor, n_filters, kernel_size=3, batchnorm=True):
     """Function to add 2 convolutional layers with the parameters passed to it"""
     # first layer
@@ -25,8 +26,9 @@ def conv2d_block(input_tensor, n_filters, kernel_size=3, batchnorm=True):
     return x
 
 
+# Unet model
 def get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True):
-    # Contracting Path
+    # cesta zmensenia
     c1 = conv2d_block(input_img, n_filters * 1, kernel_size=3, batchnorm=batchnorm)
     p1 = MaxPooling2D((2, 2))(c1)
     p1 = Dropout(dropout)(p1)
@@ -45,7 +47,7 @@ def get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True):
 
     c5 = conv2d_block(p4, n_filters=n_filters * 16, kernel_size=3, batchnorm=batchnorm)
 
-    # Expansive Path
+    # cesta zvacsenia
     u6 = Conv2DTranspose(n_filters * 8, (3, 3), strides=(2, 2), padding='same')(c5)
     u6 = concatenate([u6, c4])
     u6 = Dropout(dropout)(u6)
@@ -70,7 +72,8 @@ def get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True):
     model = Model(inputs=[input_img], outputs=[outputs])
     return model
 
-# nacitanie modelu
+
+# logovanie
 callbacks = [
     keras.callbacks.TensorBoard(
         log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S")),
@@ -82,6 +85,7 @@ callbacks = [
 
 # Generator a trenovanie pre UFPR05Sunny
 train_datagen = ImageDataGenerator()
+# predelenie vystupnej masky 255 aby sme dostali hodnoty medzi 0-1 kvoli vystupnej vrstve sigmoidi
 mask_datagen = ImageDataGenerator(rescale=1 / 255)
 val_datagen = ImageDataGenerator()
 
@@ -117,29 +121,23 @@ BATCH_SIZE = 'Batch size previously initialised'
 train_generator = zip(train_image_generator, train_mask_generator)
 val_generator = zip(val_image_generator, val_mask_generator)
 
-# model
-
-
-
+# nacitanie modelu a sumarizacia
 input_img = keras.layers.Input(shape=(320, 320, 3))
 model = get_unet(input_img)
 model.summary()
 
+# kompilacia a trenovanie modelu
 optimizer = keras.optimizers.Adam(lr=1e-3)
 model.compile(optimizer=optimizer,
               loss='mse',
               metrics=['accuracy'],
-              # sample_weight_mode='temporal'
               )
 model.fit_generator(generator=train_generator, epochs=50, steps_per_epoch=NO_OF_TRAIN_IMAGES // 8,
                     validation_data=val_generator, validation_steps=NO_OF_VAL_IMAGES // 8, callbacks=callbacks)
-
+# ulozenie modelu
 model.save('UFPR05S.h5')
 
 # Generator a trenovanie pre UFPR05CloudyRainy
-train_datagen = ImageDataGenerator()
-val_datagen = ImageDataGenerator()
-
 train_image_generator = train_datagen.flow_from_directory(
     '/NN/xerdelsky/NSIETE_project/DatasetCloudyRainy/train_frames',
     target_size=(320, 320),
@@ -188,9 +186,6 @@ model.fit_generator(generator=train_generator, epochs=50, steps_per_epoch=NO_OF_
 model.save('UFPR05CR.h5')
 
 # Generator a trenovanie pre PUCR
-train_datagen = ImageDataGenerator()
-val_datagen = ImageDataGenerator()
-
 train_image_generator = train_datagen.flow_from_directory(
     '/NN/xerdelsky/NSIETE_project/DatasetPUCR/train_frames',
     target_size=(320, 320),
@@ -239,10 +234,6 @@ model.fit_generator(generator=train_generator, epochs=50, steps_per_epoch=NO_OF_
 model.save('PUCR.h5')
 
 # Generator a trenovanie pre UFPR04
-train_datagen = ImageDataGenerator()
-mask_datagen = ImageDataGenerator(rescale=1 / 255)
-val_datagen = ImageDataGenerator()
-
 train_image_generator = train_datagen.flow_from_directory(
     '/NN/xerdelsky/NSIETE_project/DatasetUFPR04/train_frames',
     target_size=(320, 320),

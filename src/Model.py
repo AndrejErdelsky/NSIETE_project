@@ -5,7 +5,6 @@ from keras.layers import *
 class Baseline(Sequential):
     def __init__(self):
         super(Baseline, self).__init__(name='Baseline')
-        # self.add(InputLayer(input_shape=[64, 64, 1]))
         self.add(
             Conv2D(filters=16, kernel_size=11, strides=4, padding="same", activation="relu", input_shape=(64, 64, 1)))
         self.add(MaxPool2D(pool_size=3, strides=2, padding="same"))
@@ -36,17 +35,9 @@ def get_segmentation_model():
 
     up1 = convolutional.UpSampling2D(size=(2, 2), interpolation='bilinear')(c6)
     dc1 = Deconvolution2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu', strides=1)(
-         up1)
+        up1)
     dc2 = Deconvolution2D(filters=32, kernel_size=(5, 5), padding='same', activation='relu', strides=1)(
-         dc1)
-    # dc2 = Deconvolution2D(filters=32, kernel_size=(7, 7), padding='valid', activation='relu', strides=2)(
-    #     dc2)
-    #
-    # up2 = convolutional.UpSampling2D(size=(2, 2))(dc2)
-    # dc3 = Deconvolution2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu', strides=2)(
-    #     up2)
-    # dc4 = Deconvolution2D(filters=64, kernel_size=(3, 3), padding='same', activation='relu', strides=2)(
-    #     dc3)
+        dc1)
 
     out = Conv2D(kernel_size=(1, 1), filters=16, padding='same', activation='relu')(dc2)
     out = Conv2D(kernel_size=(1, 1), filters=8, padding='same', activation='relu')(out)
@@ -58,7 +49,7 @@ def get_segmentation_model():
 
 
 def get_segmentation_model2():
-    inp = Input(shape=( 720,1280, 3,))
+    inp = Input(shape=(720, 1280, 3,))
 
     c1 = Conv2D(filters=64, kernel_size=(3, 3), padding="valid", activation="relu", strides=1)(inp)
     c2 = Conv2D(filters=64, kernel_size=(3, 3), padding="valid", activation="relu", strides=1)(c1)
@@ -99,8 +90,9 @@ def get_segmentation_model2():
     model = Model(input=inp, output=out)
     return model
 
+
 def get_segmentation_model3():
-    inp = Input(shape=(720, 1280,  3,))
+    inp = Input(shape=(720, 1280, 3,))
 
     c1 = Conv2D(filters=64, kernel_size=(3, 3), padding="valid", activation="relu", strides=1)(inp)
     c2 = Conv2D(filters=64, kernel_size=(3, 3), padding="valid", activation="relu", strides=1)(c1)
@@ -143,17 +135,19 @@ def get_segmentation_model3():
 
 
 def conv2d_block(input_tensor, n_filters, kernel_size=3, batchnorm=True):
-    """Function to add 2 convolutional layers with the parameters passed to it"""
-    # first layer
+    """Funkcia ktora vrati 2 konvolucne vrstvy """
+    # prva vrstva
     x = Conv2D(filters=n_filters, kernel_size=(kernel_size, kernel_size), \
                kernel_initializer='he_normal', padding='same')(input_tensor)
+    # normalizacia
     if batchnorm:
         x = BatchNormalization()(x)
     x = Activation('relu')(x)
 
-    # second layer
+    # druha vrstva
     x = Conv2D(filters=n_filters, kernel_size=(kernel_size, kernel_size), \
                kernel_initializer='he_normal', padding='same')(input_tensor)
+    # normalizacia
     if batchnorm:
         x = BatchNormalization()(x)
     x = Activation('relu')(x)
@@ -162,7 +156,7 @@ def conv2d_block(input_tensor, n_filters, kernel_size=3, batchnorm=True):
 
 
 def get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True):
-    # Contracting Path
+    # Cesta zmensenia
     c1 = conv2d_block(input_img, n_filters * 1, kernel_size=3, batchnorm=batchnorm)
     p1 = MaxPooling2D((2, 2))(c1)
     p1 = Dropout(dropout)(p1)
@@ -181,7 +175,7 @@ def get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True):
 
     c5 = conv2d_block(p4, n_filters=n_filters * 16, kernel_size=3, batchnorm=batchnorm)
 
-    # Expansive Path
+    # cesta rekonstrukcie
     u6 = Conv2DTranspose(n_filters * 8, (3, 3), strides=(2, 2), padding='same')(c5)
     u6 = concatenate([u6, c4])
     u6 = Dropout(dropout)(u6)
