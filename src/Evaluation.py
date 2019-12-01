@@ -3,7 +3,7 @@ from keras.models import load_model
 import matplotlib.pyplot as plt
 from src.LoadDataSegmentation import *
 
-model = load_model('ModelDatasetPUCR.h5')
+model = load_model('Model.h5')
 model.summary()
 fig = plt.figure(figsize=(14, 14))
 y = fig.add_subplot(6, 5, 1)

@@ -76,7 +76,7 @@ def get_unet(input_img, n_filters=16, dropout=0.1, batchnorm=True):
 # logovanie
 callbacks = [
     keras.callbacks.TensorBoard(
-        log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S")),
+        log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + "05S"),
         histogram_freq=1  # ,
         # profile_batch=0
     )
@@ -169,7 +169,14 @@ NO_OF_TRAIN_IMAGES = len(os.listdir('/NN/xerdelsky/NSIETE_project/DatasetCloudyR
 BATCH_SIZE = 'Batch size previously initialised'
 train_generator = zip(train_image_generator, train_mask_generator)
 val_generator = zip(val_image_generator, val_mask_generator)
+callbacks = [
+    keras.callbacks.TensorBoard(
+        log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + "05Rainy"),
+        histogram_freq=1  # ,
+        # profile_batch=0
+    )
 
+]
 input_img = keras.layers.Input(shape=(320, 320, 3))
 model = get_unet(input_img)
 model.summary()
@@ -218,6 +225,14 @@ BATCH_SIZE = 'Batch size previously initialised'
 train_generator = zip(train_image_generator, train_mask_generator)
 val_generator = zip(val_image_generator, val_mask_generator)
 
+callbacks = [
+    keras.callbacks.TensorBoard(
+        log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + "PUCR"),
+        histogram_freq=1  # ,
+        # profile_batch=0
+    )
+
+]
 input_img = keras.layers.Input(shape=(320, 320, 3))
 model = get_unet(input_img)
 model.summary()
@@ -265,7 +280,14 @@ NO_OF_TRAIN_IMAGES = len(os.listdir('/NN/xerdelsky/NSIETE_project/DatasetUFPR04/
 BATCH_SIZE = 'Batch size previously initialised'
 train_generator = zip(train_image_generator, train_mask_generator)
 val_generator = zip(val_image_generator, val_mask_generator)
+callbacks = [
+    keras.callbacks.TensorBoard(
+        log_dir=os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + "04"),
+        histogram_freq=1  # ,
+        # profile_batch=0
+    )
 
+]
 input_img = keras.layers.Input(shape=(320, 320, 3))
 model = get_unet(input_img)
 model.summary()

@@ -21,7 +21,7 @@ maskPUCR = "..\DatasetPUCR\Mask"
 data04 = "..\DatasetUFPR04\Snimky"
 mask04 = "..\DatasetUFPR04\Mask"
 
-data = dataPUCR
+data = data05S
 mask = maskPUCR
 
 
